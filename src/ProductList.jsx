@@ -3,7 +3,7 @@ import './ProductList.css'
 import CartItem from './CartItem';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addItem } from '../redux/CartSlice';
+import { addItem } from '../features/cart/CartSlice';
 function ProductList({ onHomeClick }) {
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
@@ -240,8 +240,8 @@ function ProductList({ onHomeClick }) {
         textDecoration: 'none',
     }
     const handleAddToCart = (plant) => {
-        dispatch(addToCart(plant));
-        setAddedToCart((prev) => [...prev, plant.id]);
+        dispatch(addItem(plant));  // Add plant to cart
+        setAddedToCart(prev => ({ ...prev, [plant.name]: true })); // Mark as added
     };
 
     const handleHomeClick = (e) => {
@@ -286,7 +286,18 @@ function ProductList({ onHomeClick }) {
             }`}
             disabled={addedToCart.includes(plant.id)}
           >
-            {addedToCart.includes(plant.id) ? "Added" : "Add to Cart"}
+            {addedToCart[plant.name] ? (
+                <button disabled className="bg-gray-400 text-white px-4 py-2 rounded">
+                 Added
+                </button>
+            ) : (
+                <button 
+                 onClick={() => handleAddToCart(plant)} 
+                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
+                >
+                Add to Cart
+                </button>
+            )}
           </button>
         </div>
       ))}
