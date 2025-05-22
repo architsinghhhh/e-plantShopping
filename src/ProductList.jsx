@@ -7,6 +7,10 @@ import { addItem } from '../redux/CartSlice';
 function ProductList({ onHomeClick }) {
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
+    const dispatch = useDispatch();
+
+    // Step 4: Track which plants are added to cart
+    const [addedToCart, setAddedToCart] = useState([]);
 
     const plantsArray = [
         {
@@ -236,8 +240,9 @@ function ProductList({ onHomeClick }) {
         textDecoration: 'none',
     }
     const handleAddToCart = (plant) => {
-        dispatch(addItem(plant));
-      };
+        dispatch(addToCart(plant));
+        setAddedToCart((prev) => [...prev, plant.id]);
+    };
 
     const handleHomeClick = (e) => {
         e.preventDefault();
@@ -260,6 +265,33 @@ function ProductList({ onHomeClick }) {
     };
     return (
         <div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
+      {plantsArray.map((plant) => (
+        <div key={plant.id} className="bg-white rounded-2xl shadow-md p-4">
+          <img
+            src={plant.image}
+            alt={plant.name}
+            className="w-full h-40 object-cover rounded-2xl mb-4"
+          />
+          <h2 className="text-lg font-semibold">{plant.name}</h2>
+          <p className="text-gray-600">{plant.category}</p>
+          <p className="text-green-600 font-bold">${plant.price}</p>
+
+          <button
+            onClick={() => handleAddToCart(plant)}
+            className={`mt-2 px-4 py-2 rounded-2xl font-semibold shadow ${
+              addedToCart.includes(plant.id)
+                ? "bg-gray-300 text-gray-700 cursor-not-allowed"
+                : "bg-green-500 text-white hover:bg-green-600"
+            }`}
+            disabled={addedToCart.includes(plant.id)}
+          >
+            {addedToCart.includes(plant.id) ? "Added" : "Add to Cart"}
+          </button>
+        </div>
+      ))}
+    </div>
+
           <div className="navbar" style={styleObj}>
             <div className="tag">
               <div className="luxury">
