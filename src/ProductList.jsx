@@ -235,6 +235,9 @@ function ProductList({ onHomeClick }) {
         fontSize: '30px',
         textDecoration: 'none',
     }
+    const handleAddToCart = (plant) => {
+        dispatch(addItem(plant));
+      };
 
     const handleHomeClick = (e) => {
         e.preventDefault();
@@ -300,17 +303,20 @@ function ProductList({ onHomeClick }) {
           </div>
       
           {!showCart ? (
-            <div className="product-grid">
-              {plantsArray.map((plant, index) => (
-                <div key={index} className="product-card">
-                  <img src={plant.image} alt={plant.name} className="product-image" />
-                  <h3>{plant.name}</h3>
-                  <p>{plant.description}</p>
-                  <p><strong>Cost:</strong> ₹{plant.cost}</p>
-                </div>
-              ))}
-            </div>
-          ) : (
+        <div className="product-grid">
+          {plantsArray.flatMap(category =>
+            category.plants.map((plant, index) => (
+              <div key={index} className="product-card">
+                <img src={plant.image} alt={plant.name} />
+                <h3>{plant.name}</h3>
+                <p>{plant.description}</p>
+                <p><strong>Price:</strong> ₹{plant.cost}</p>
+                <button onClick={() => handleAddToCart(plant)}>Add to Cart</button>
+              </div>
+            ))
+          )}
+        </div>
+      ) : (
             <CartItem onContinueShopping={handleContinueShopping} />
           )}
         </div>
